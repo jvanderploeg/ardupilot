@@ -28,9 +28,18 @@ class Feature:
         return "enable-" + self.label.replace(" ", "-")
 
 
-# list of build options to offer NOTE: the dependencies must be
-# written as a single string with commas and no spaces,
-# eg. 'dependency1,dependency2'
+# list of build options to offer
+
+# Feature(category, label, macro, description, default, dependencies)
+#
+# category      : The category/group this feature belongs to
+# label         : Globally unique identifier for the feature (max 30 chars)
+# macro         : The macro which enables/disables the feature at compile-time.
+#                 e.g., "AP_AIRSPEED_ENABLED".
+# description   : User visible description shown on Custom build server.
+# default       : Default state (1 = enabled, 0 = disabled)
+# dependencies  : Comma-separated list of feature labels that this feature depends on
+#                 (a single string with commas and no spaces). e.g., 'dependency1,dependency2'.
 BUILD_OPTIONS = [
     Feature('AHRS', 'EKF3', 'HAL_NAVEKF3_AVAILABLE', 'Enable EKF3', 1, None),
     Feature('AHRS', 'EKF2', 'HAL_NAVEKF2_AVAILABLE', 'Enable EKF2', 0, None),
@@ -75,7 +84,7 @@ BUILD_OPTIONS = [
 
     Feature('Telemetry', 'CRSF', 'HAL_CRSF_TELEM_ENABLED', 'Enable CRSF telemetry', 0, 'FrSky SPort PassThrough,FrSky,FrSky SPort,RC_CRSF'),  # noqa
     Feature('Telemetry', 'CRSFText', 'HAL_CRSF_TELEM_TEXT_SELECTION_ENABLED', 'Enable CRSF text param selection', 0, 'CRSF,OSD_PARAM,FrSky SPort PassThrough,FrSky,FrSky SPort'),  # NOQA: E501
-    Feature('Telemetry', 'CRSF Scripting', 'AP_CRSF_SCRIPTING_ENABLED', 'Enable CRSF Menu Scripting', 0, 'CRSFText,CRSF,OSD_PARAM,FrSky SPort PassThrough,FrSky,FrSky SPort'),  # noqa
+    Feature('Telemetry', 'CRSF Scripting', 'AP_CRSF_SCRIPTING_ENABLED', 'Enable CRSF Menu Scripting', 0, 'CRSFText,SCRIPTING,CRSF,OSD_PARAM,FrSky SPort PassThrough,FrSky,FrSky SPort'),  # noqa
     Feature('Telemetry', 'HOTT', 'HAL_HOTT_TELEM_ENABLED', 'Enable HOTT telemetry', 0, None),
     Feature('Telemetry', 'SPEKTRUM', 'HAL_SPEKTRUM_TELEM_ENABLED', 'Enable Spektrum telemetry', 0, None),
     Feature('Telemetry', 'LTM', 'AP_LTM_TELEM_ENABLED', 'Enable LTM telemetry', 0, None),
@@ -122,6 +131,7 @@ BUILD_OPTIONS = [
     Feature('Generator', 'GENERATOR_IE2400', 'AP_GENERATOR_IE_2400_ENABLED', 'Enable IntelligentEnergy 2400', 0, "GENERATOR"),  # noqa
     Feature('Generator', 'GENERATOR_IE650', 'AP_GENERATOR_IE_650_800_ENABLED', 'Enable IntelligentEnergy 650 and 800', 0, "GENERATOR"),  # noqa
     Feature('Generator', 'GENERATOR_LOWEHEISER', 'AP_GENERATOR_LOWEHEISER_ENABLED', 'Enable Loweheiser generator', 0, "GENERATOR,EFI"),  # noqa
+    Feature('Generator', 'GENERATOR_CORTEX', 'AP_GENERATOR_CORTEX_ENABLED', 'Enable Currawong Engineering Cortex generator', 0, "GENERATOR,PICCOLOCAN"),  # noqa
 
     Feature('OSD', 'OSD', 'OSD_ENABLED', 'Enable OSD', 0, None),
     Feature('OSD', 'PLUSCODE', 'HAL_PLUSCODE_ENABLE', 'Enable PlusCode', 0, 'OSD'),
@@ -133,7 +143,7 @@ BUILD_OPTIONS = [
     Feature('VTX', 'SMARTAUDIO', 'AP_SMARTAUDIO_ENABLED', 'Enable SmartAudio VTX contol', 0, "VIDEO_TX"),
     Feature('VTX', 'TRAMP', 'AP_TRAMP_ENABLED', 'Enable IRC Tramp VTX control', 0, "VIDEO_TX"),
 
-    Feature('ESC', 'PICCOLOCAN', 'HAL_PICCOLO_CAN_ENABLE', 'Enable PiccoloCAN', 0, 'DroneCAN'),
+    Feature('ESC', 'PICCOLOCAN', 'AP_PICCOLOCAN_ENABLED', 'Enable PiccoloCAN', 0, 'DroneCAN'),
     Feature('ESC', 'TORQEEDO', 'HAL_TORQEEDO_ENABLED', 'Enable Torqeedo motors', 0, None),
 
     Feature('ESC', 'ESC_EXTENDED_TELM', 'AP_EXTENDED_ESC_TELEM_ENABLED', 'Enable Extended ESC telemetry', 0, 'DroneCAN'),
@@ -147,6 +157,7 @@ BUILD_OPTIONS = [
     Feature('AP_Periph', 'PERIPH_RELAY', 'AP_PERIPH_RELAY_ENABLED', 'Handle DroneCAN hardpoint command', 0, 'RELAY'),
     Feature('AP_Periph', 'PERIPH_BATTERY_BALANCE', 'AP_PERIPH_BATTERY_BALANCE_ENABLED', 'Emit DroneCAN BatteryInfoAux messages for monitoring Battery Balance', 0, None), # noqa
     Feature('AP_Periph', 'PERIPH_BATTERY_TAG', 'AP_PERIPH_BATTERY_TAG_ENABLED', 'Emit DroneCAN BatteryTag messages', 0, None), # noqa
+    Feature('AP_Periph', 'PERIPH_BATTERY_BMS', 'AP_PERIPH_BATTERY_BMS_ENABLED', 'Enable Battery BMS button and LED support', 0, None), # noqa
     Feature('AP_Periph', 'PERIPH_PROXIMITY', 'AP_PERIPH_PROXIMITY_ENABLED', 'Emit DroneCAN Proximity Messages for AP_Proximity sensors', 0, 'PROXIMITY'), # noqa
     Feature('AP_Periph', 'PERIPH_GPS', 'AP_PERIPH_GPS_ENABLED', 'Emit DroneCAN GNSS Messages for AP_GPS sensors', 0, None), # noqa
     Feature('AP_Periph', 'PERIPH_ADSB', 'AP_PERIPH_ADSB_ENABLED', 'Emit DroneCAN TrafficReport Messages for ADSB_VEHICLE MAVLink messages', 0, None), # noqa
@@ -202,6 +213,7 @@ BUILD_OPTIONS = [
     Feature('Compass', 'IIS2MDC', 'AP_COMPASS_IIS2MDC_ENABLED', 'Enable IIS2MDC compasses', 0, None),
     Feature('Compass', 'IST8310', 'AP_COMPASS_IST8310_ENABLED', 'Enable IST8310 compasses', 1, None),
     Feature('Compass', 'LIS3MDL', 'AP_COMPASS_LIS3MDL_ENABLED', 'Enable LIS3MDL compasses', 1, None),
+    Feature('Compass', 'LIS2MDL', 'AP_COMPASS_LIS2MDL_ENABLED', 'Enable LIS2MDL compasses', 1, None),
     Feature('Compass', 'LSM303D', 'AP_COMPASS_LSM303D_ENABLED', 'Enable LSM303D compasses', 1, None),
     Feature('Compass', 'LSM9DS1', 'AP_COMPASS_LSM9DS1_ENABLED', 'Enable LSM9DS1 compasses', 1, None),
     Feature('Compass', 'MAG3110', 'AP_COMPASS_MAG3110_ENABLED', 'Enable MAG3110 compasses', 1, None),
@@ -218,7 +230,7 @@ BUILD_OPTIONS = [
     Feature('Gimbal', 'MOUNT', 'HAL_MOUNT_ENABLED', 'Enable Camera Mounts', 0, None),
     Feature('Gimbal', 'ALEXMOS', 'HAL_MOUNT_ALEXMOS_ENABLED', 'Enable Alexmos gimbal', 0, "MOUNT"),
     Feature('Gimbal', 'CADDX', 'HAL_MOUNT_CADDX_ENABLED', 'Enable CADDX gimbal', 0, "MOUNT"),
-    Feature('Gimbal', 'GREMSY', 'HAL_MOUNT_GREMSY_ENABLED', 'Enable Gremsy gimbal', 0, "MOUNT"),
+    Feature('Gimbal', 'MAVLINK', 'HAL_MOUNT_MAVLINK_ENABLED', 'Enable MAVLink gimbal', 0, "MOUNT"),
     Feature('Gimbal', 'SERVO', 'HAL_MOUNT_SERVO_ENABLED', 'Enable Servo gimbal', 0, "MOUNT"),
     Feature('Gimbal', 'SIYI', 'HAL_MOUNT_SIYI_ENABLED', 'Enable Siyi gimbal', 0, "MOUNT"),
     Feature('Gimbal', 'SOLOGIMBAL', 'HAL_SOLO_GIMBAL_ENABLED', 'Enable Solo gimbal', 0, "MOUNT"),
@@ -259,7 +271,7 @@ BUILD_OPTIONS = [
     Feature('Plane', 'PLANE_GLIDER_PULLUP', 'AP_PLANE_GLIDER_PULLUP_ENABLED', 'Enable Glider pullup support', 0, None),
     Feature('Plane', 'QUICKTUNE', 'AP_QUICKTUNE_ENABLED', 'Enable VTOL quicktune', 0, None),
     Feature('Plane', 'AUTOLAND_MODE', 'MODE_AUTOLAND_ENABLED', 'Enable Fixed Wing Autolanding mode', 0, None),
-    Feature('Plane', 'PLANE_SYSTEMID', 'AP_PLANE_SYSTEMID_ENABLED', 'Enable systemID support for quadplanes', 0, 'QUADPLANE,Logging'),  # NOQA:E501
+    Feature('Plane', 'PLANE_SYSTEMID', 'AP_PLANE_SYSTEMID_ENABLED', 'Enable systemID support', 0, 'QUADPLANE,Logging'),  # NOQA:E501
 
     Feature('RC', 'RC_Protocol', 'AP_RCPROTOCOL_ENABLED', "Enable Serial RC Protocols", 0, None),   # NOQA: E501
     Feature('RC', 'RC_CRSF', 'AP_RCPROTOCOL_CRSF_ENABLED', "Enable CRSF", 0, "RC_Protocol"),   # NOQA: E501
@@ -316,6 +328,7 @@ BUILD_OPTIONS = [
     Feature('Rangefinder', 'RANGEFINDER_WASP', 'AP_RANGEFINDER_WASP_ENABLED', "Enable Rangefinder - Wasp", 0, "RANGEFINDER"),   # NOQA: E501
     Feature('Rangefinder', 'RANGEFINDER_RDS02UF', 'AP_RANGEFINDER_RDS02UF_ENABLED', "Enable Rangefinder - RDS02UF", 0, "RANGEFINDER"),   # NOQA: E501
     Feature('Rangefinder', 'RANGEFINDER_HEXSOONRADAR', 'AP_RANGEFINDER_HEXSOONRADAR_ENABLED', "Enable Rangefinder - Hexsoon Radar", 0, "RANGEFINDER"),   # NOQA: E501
+    Feature('Rangefinder', 'RANGEFINDER_LRD1', 'AP_RANGEFINDER_AINSTEIN_LR_D1_ENABLED', "Enable Rangefinder - Ainstein LRD1", 0, "RANGEFINDER"),   # NOQA: E501
 
     Feature('Sensors', 'OPTICALFLOW', 'AP_OPTICALFLOW_ENABLED', 'Enable Optical Flow', 0, None),
     Feature('Sensors', 'OPTICALFLOW_CXOF', 'AP_OPTICALFLOW_CXOF_ENABLED', 'Enable Optical flow CXOF Sensor', 0, "OPTICALFLOW"),

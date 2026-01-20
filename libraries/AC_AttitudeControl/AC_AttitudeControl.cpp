@@ -86,6 +86,7 @@ const AP_Param::GroupInfo AC_AttitudeControl::var_info[] = {
     // @Description: Roll axis angle controller P gain.  Converts the error between the desired roll angle and actual angle to a desired roll rate
     // @Range: 3.000 12.000
     // @Range{Sub}: 0.0 12.000
+    // @Increment: 0.01
     // @User: Standard
     AP_SUBGROUPINFO(_p_angle_roll, "ANG_RLL_", 13, AC_AttitudeControl, AC_P),
 
@@ -94,6 +95,7 @@ const AP_Param::GroupInfo AC_AttitudeControl::var_info[] = {
     // @Description: Pitch axis angle controller P gain.  Converts the error between the desired pitch angle and actual angle to a desired pitch rate
     // @Range: 3.000 12.000
     // @Range{Sub}: 0.0 12.000
+    // @Increment: 0.01
     // @User: Standard
     AP_SUBGROUPINFO(_p_angle_pitch, "ANG_PIT_", 14, AC_AttitudeControl, AC_P),
 
@@ -102,6 +104,7 @@ const AP_Param::GroupInfo AC_AttitudeControl::var_info[] = {
     // @Description: Yaw axis angle controller P gain.  Converts the error between the desired yaw angle and actual angle to a desired yaw rate
     // @Range: 3.000 12.000
     // @Range{Sub}: 0.0 6.000
+    // @Increment: 0.01
     // @User: Standard
     AP_SUBGROUPINFO(_p_angle_yaw, "ANG_YAW_", 15, AC_AttitudeControl, AC_P),
 
@@ -1251,10 +1254,6 @@ Vector3f AC_AttitudeControl::update_ang_vel_target_from_att_error(const Vector3f
     } else {
         rate_target_ang_vel.z = angleP_yaw * attitude_error_rot_vec_rad.z;
     }
-
-    // reset angle P scaling, saving used value
-    _angle_P_scale_used = _angle_P_scale;
-    _angle_P_scale = VECTORF_111;
 
     return rate_target_ang_vel;
 }
